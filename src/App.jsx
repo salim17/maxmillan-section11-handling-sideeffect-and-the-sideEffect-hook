@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Places from "./components/Places.jsx";
 import { AVAILABLE_PLACES } from "./data.js";
@@ -10,17 +10,29 @@ import { sortPlacesByDistance } from "./loc.js";
 function App() {
   const modal = useRef();
   const selectedPlace = useRef();
+  const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState([]);
 
-  // browser inbuilt method to get user location.
-  // has a callback function which runs when location is fetched. runs asynchronously
-  navigator.geolocation.getCurrentPosition((position) => {
-    const sortedPlaces = sortPlacesByDistance(
-      AVAILABLE_PLACES,
-      position.coords.latitude,
-      position.coords.longitude
-    );
-  });
+  console.log("App component loading...");
+
+  // executed only AFTER the component function execution has run (in short the rendering is done)
+  // so now when useEffect runs, we are updating the state here so the component function executes again.
+  // and in theory this useEffect will also execute again, but thats where this dependency array comes into play
+  // if you define this dependency array, react will check the dependency values there, and it will only execute
+  // if the dependency value changes there...
+  useEffect(() => {
+    // browser inbuilt method to get user location.
+    // has a callback function which runs when location is fetched. runs asynchronously
+    console.log("useEffect executes ....");
+    navigator.geolocation.getCurrentPosition((position) => {
+      const sortedPlaces = sortPlacesByDistance(
+        AVAILABLE_PLACES,
+        position.coords.latitude,
+        position.coords.longitude
+      );
+      setAvailablePlaces(sortedPlaces);
+    });
+  }, []);
 
   function handleStartRemovePlace(id) {
     modal.current.open();
@@ -74,7 +86,8 @@ function App() {
         />
         <Places
           title="Available Places"
-          places={AVAILABLE_PLACES}
+          places={availablePlaces}
+          fallbackText="Sorting places by distance... "
           onSelectPlace={handleSelectPlace}
         />
       </main>
