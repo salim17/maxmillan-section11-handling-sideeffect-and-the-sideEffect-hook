@@ -7,11 +7,16 @@ import DeleteConfirmation from "./components/DeleteConfirmation.jsx";
 import logoImg from "./assets/logo.png";
 import { sortPlacesByDistance } from "./loc.js";
 
+const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+const storedPlaces = storedIds.map((id) =>
+  AVAILABLE_PLACES.find((place) => place.id === id)
+);
+
 function App() {
   const modal = useRef();
   const selectedPlace = useRef();
   const [availablePlaces, setAvailablePlaces] = useState([]);
-  const [pickedPlaces, setPickedPlaces] = useState([]);
+  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
 
   console.log("App component loading...");
 
@@ -23,7 +28,7 @@ function App() {
   useEffect(() => {
     // browser inbuilt method to get user location.
     // has a callback function which runs when location is fetched. runs asynchronously
-    console.log("useEffect executes ....");
+    console.log("useEffect1 executes ....");
     navigator.geolocation.getCurrentPosition((position) => {
       const sortedPlaces = sortPlacesByDistance(
         AVAILABLE_PLACES,
@@ -33,6 +38,17 @@ function App() {
       setAvailablePlaces(sortedPlaces);
     });
   }, []);
+
+  // can have multiple useEffect hooks
+  // but this use effect is redundant ... because the code that it executes is synchronous.
+  // useEffect(() => {
+  //   console.log("useEffect2 executes ....");
+  //   const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+  //   const storedPlaces = storedIds.map((id) =>
+  //     AVAILABLE_PLACES.find((place) => place.id === id)
+  //   );
+  //   setPickedPlaces(storedPlaces);
+  // }, []);
 
   function handleStartRemovePlace(id) {
     modal.current.open();
@@ -52,6 +68,7 @@ function App() {
       return [place, ...prevPickedPlaces];
     });
 
+    // fallback code || []
     const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
     // provided by the browser, JSON object and stringfy method is also provided by the browser
     if (storedIds.indexOf(id) === -1) {
@@ -67,6 +84,12 @@ function App() {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     modal.current.close();
+
+    const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+    localStorage.setItem(
+      "selectedPlaces",
+      JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current))
+    );
   }
 
   return (
