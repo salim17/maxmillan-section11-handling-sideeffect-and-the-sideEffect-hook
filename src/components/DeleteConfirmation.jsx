@@ -1,4 +1,14 @@
 export default function DeleteConfirmation({ onConfirm, onCancel }) {
+  // make sure that this timer is not started when the app starts. so this timer starts only when the place is selected and
+  // modal is opened for that we make it a part of the dom based on whether the modal is open or not.
+
+  // also we need to be sure that this timer is closed when we click the Yes or NO in the modal.
+  setTimeout(() => {
+    onConfirm();
+  }, 3000);
+
+  console.log("Delete confirmation loading ....");
+
   return (
     <div id="delete-confirmation">
       <h2>Are you sure?</h2>

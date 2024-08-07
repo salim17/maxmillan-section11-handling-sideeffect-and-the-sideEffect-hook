@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-function Modal({ open, children }) {
+function Modal({ open, children, onClose }) {
   const dialog = useRef();
 
   // this won't work because remember the connection of useRef element is only made after the rendering is done for the first time..
@@ -31,7 +31,7 @@ function Modal({ open, children }) {
     // since the dialog element also closes if someone presses the escape key .. therefore it does not change the value of open prop
     // in this case.. to fix this issue.. we need to set the open to false.. by setting the onClose prop.
     <dialog className="modal" ref={dialog} onClose={onClose}>
-      {children}
+      {open ? children : null}
     </dialog>,
     document.getElementById("modal")
   );
