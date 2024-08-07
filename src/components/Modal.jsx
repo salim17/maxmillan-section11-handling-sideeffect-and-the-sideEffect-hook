@@ -1,26 +1,18 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { useRef } from "react";
+import { createPortal } from "react-dom";
 
-const Modal = forwardRef(function Modal({ children }, ref) {
+function Modal({ open, children }) {
   const dialog = useRef();
 
-  useImperativeHandle(ref, () => {
-    return {
-      open: () => {
-        dialog.current.showModal();
-      },
-      close: () => {
-        dialog.current.close();
-      },
-    };
-  });
-
   return createPortal(
-    <dialog className="modal" ref={dialog}>
+    // no backdrop will be seen if you use this approach of setting open prop on the dialog element.
+    // backdrop means, when modal is open user cant interact with anything else.
+    // backdrop will only appear if we use dialog.current.showModal() method ..
+    <dialog className="modal" ref={dialog} open={open}>
       {children}
     </dialog>,
-    document.getElementById('modal')
+    document.getElementById("modal")
   );
-});
+}
 
 export default Modal;
