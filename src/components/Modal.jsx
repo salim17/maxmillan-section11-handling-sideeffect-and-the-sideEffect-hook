@@ -14,7 +14,8 @@ function Modal({ open, children, onClose }) {
 
   console.log("model component ... ");
 
-  // this will run whenver the value of open prop changes
+  // this will run after the first time when the Modal component is loaded and whenever the component is reloaded again and the
+  // value of open prop changes
   useEffect(() => {
     console.log("useEffect of modal ...");
     if (open) {
