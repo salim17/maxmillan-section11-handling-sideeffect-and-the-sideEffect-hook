@@ -13,6 +13,8 @@ function Modal({ open, children }) {
   // }
 
   console.log('model component ... ')
+
+  // this will run whenver the value of open prop changes 
   useEffect(() => {
     console.log('useEffect of modal ...')
     if (open) {
@@ -20,13 +22,13 @@ function Modal({ open, children }) {
     } else {
       dialog.current.close();
     }
-  }, []);
+  }, [open]);
 
   return createPortal(
     // no backdrop will be seen if you use this approach of setting open prop on the dialog element.
     // backdrop means, when modal is open user cant interact with anything else.
     // backdrop will only appear if we use dialog.current.showModal() method ..
-    <dialog className="modal" ref={dialog} open={open}>
+    <dialog className="modal" ref={dialog}>
       {children}
     </dialog>,
     document.getElementById("modal")
