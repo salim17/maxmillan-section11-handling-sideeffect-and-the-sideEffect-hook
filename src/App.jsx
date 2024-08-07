@@ -51,6 +51,15 @@ function App() {
       const place = AVAILABLE_PLACES.find((place) => place.id === id);
       return [place, ...prevPickedPlaces];
     });
+
+    const storedIds = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+    // provided by the browser, JSON object and stringfy method is also provided by the browser
+    if (storedIds.indexOf(id) === -1) {
+      localStorage.setItem(
+        "selectedPlaces",
+        JSON.stringify([id, ...storedIds])
+      );
+    }
   }
 
   function handleRemovePlace() {
