@@ -1,8 +1,26 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 function Modal({ open, children }) {
   const dialog = useRef();
+
+  // this won't work because remember the connection of useRef element is only made after the rendering is done for the first time..
+  // hence we will use useEffect here..
+  // if(open) {
+  //   dialog.current.showModal();
+  // } else {
+  //   dialog.current.close();
+  // }
+
+  console.log('model component ... ')
+  useEffect(() => {
+    console.log('useEffect of modal ...')
+    if (open) {
+      dialog.current.showModal();
+    } else {
+      dialog.current.close();
+    }
+  }, []);
 
   return createPortal(
     // no backdrop will be seen if you use this approach of setting open prop on the dialog element.
